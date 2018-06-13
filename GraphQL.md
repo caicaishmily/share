@@ -20,6 +20,8 @@ GraphQL是Facebook在2012年开发的一种数据查询语言，并在2015年对
 
 ## GraphQL VS REST
 
+![](C:\Users\sz08\Pictures\1_fKhxPG5PQ55kDika_UVukw.png)
+
 
 
 ####   参考链接：
