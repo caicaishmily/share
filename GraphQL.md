@@ -30,4 +30,7 @@ GraphQL是Facebook在2012年开发的一种数据查询语言，并在2015年对
 - http://spec.graphql.cn/
 - https://www.howtographql.com/
 - https://dev-blog.apollodata.com/graphql-vs-rest-5d425123e34b
-
+- [解析 GraphQL 的查询语法](https://mp.weixin.qq.com/s/nim-KSqO3n2d2qwbTHKBJA)
+- [REST将会过时，而GraphQL则会长存](https://mp.weixin.qq.com/s/F55uPAKLI1c78ccsK23ubw)
+- [GraphQL 在微服务架构中的实践](https://mp.weixin.qq.com/s/sU8PPwFhM0IcVBB2GJF8Kw)
+- [GraphQL 聚合层解放前后端](https://mp.weixin.qq.com/s/kjrMnj9A404RjYtynBqxLw)
