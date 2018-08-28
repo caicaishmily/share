@@ -1,0 +1,74 @@
+#!bin/sh
+
+fancy_echo() {
+  local fmt="$1"; shift
+  printf "\\n$fmt\\n" "$@"
+}
+
+append_to_bash_profile() {
+  printf "\\n%s\\n" $1 >> "$HOME/.bash_profile"
+}
+
+# Install Homebrew
+if ! command -v brew >/dev/null; then
+  fancy_echo "Installing Homebrew ..."
+    curl -fsS \
+      'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+    append_to_bash_profile 'export PATH="/usr/local/bin:$PATH"'
+    export PATH="/usr/local/bin:$PATH"
+fi
+
+fancy_echo "Updating Homebrew formulae ..."
+brew update --force # https://github.com/Homebrew/brew/issues/1151
+brew bundle --file=- <<EOF
+tap "homebrew/services"
+
+# Install git
+brew "git"
+
+# Install erlang
+brew "erlang"
+
+brew "gnupg"
+
+# Databases
+brew "postgres", restart_service: :changed
+brew "mysql", restart_service: :changed
+EOF
+
+fancy_echo "Configuring asdf version manager..."
+if [ ! -d "$HOME/.asdf" ]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.5.0
+  append_to_bash_profile "source $HOME/.asdf/asdf.sh"
+fi
+
+install_asdf_plugin() {
+  local name="$1"
+  local url="$2"
+
+  if ! asdf plugin-list | grep -Fq "$name"; then
+    asdf plugin-add "$name" "$url"
+  fi
+}
+
+source "$HOME/.asdf/asdf.sh"
+install_asdf_plugin "elixir" "https://github.com/asdf-vm/asdf-elixir.git"
+install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
+
+install_asdf_language() {
+  local language="$1"
+  local version
+  version="$(asdf list-all "$language" | grep -v "[a-z]" | tail -1)"
+
+  if ! asdf list "$language" | grep -Fq "$version"; then
+    asdf install "$language" "$version"
+    asdf global "$language" "$version"
+  fi
+}
+
+fancy_echo "Installing latest Elixir..."
+install_asdf_language "elixir"
+
+fancy_echo "Installing latest Nodejs..."
+bash "$HOME/.asdf/plugins/nodejs/bin/import-release-team-keyring"
+install_asdf_language "nodejs"
